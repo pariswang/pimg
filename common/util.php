@@ -1,5 +1,13 @@
 <?php
 
+function _errorMsg($err, $errMsg=''){
+	global $_ErrorMsgs;
+	return array(
+		'error' => $err,
+		'errorMsg' => $errMsg=='' ? $_ErrorMsgs[$err] : $errMsg;
+	);
+}
+
 function request_raw_uri(){
 	if (isset($_SERVER['REQUEST_URI'])){
 		$uri = $_SERVER['REQUEST_URI'];
@@ -35,6 +43,6 @@ function getPathArray(){
   return $pathArray;
 }
 
-public function isPost() {
+function isPost() {
 	return $_SERVER ['REQUEST_METHOD'] === 'POST' ? TRUE : FALSE;
 }
