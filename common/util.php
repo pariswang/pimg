@@ -4,7 +4,7 @@ function _errorMsg($err, $errMsg=''){
 	global $_ErrorMsgs;
 	return array(
 		'error' => $err,
-		'errorMsg' => $errMsg=='' ? $_ErrorMsgs[$err] : $errMsg;
+		'errorMsg' => $errMsg=='' ? $_ErrorMsgs[$err] : $errMsg
 	);
 }
 
@@ -36,7 +36,7 @@ function request_uri(){
 function getPathArray(){
    $pathArray = request_uri();
 	if ($pathArray === '/'){
-		$pathArray = (array) $pathArray;
+		$pathArray = array();
 	}else{
 		$pathArray = explode('/', $pathArray);
 	}
