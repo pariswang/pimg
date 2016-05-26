@@ -25,6 +25,10 @@ if(!is_file(DIR_ROOT.'/'.$module.'/'.$dir.'/'.$md5.'.'.$type)){
 require_once(LIB_PATH . '/Image/Image.php');
 
 $image = new Common_Image(DIR_ROOT.'/'.$module.'/'.$dir.'/'.$md5.'.'.$type);
+if(!$image->isReady){
+	echo json_encode(_errorMsg(10));
+	exit;
+}
 
 $destSize = $format[1];
 $mode = $format[2];
@@ -32,8 +36,8 @@ $destSize = explode(',', $destSize);
 
 if(substr($mode,0,2)=='sc'||empty($mode)){
 	$scType = substr($mode,2);
-	$wPosition = Common_Image::PLACE_CENTER;
-	$hPosition = Common_Image::PLACE_CENTER;
+	$wPosition = Common_Image::PLACE_WEST;
+	$hPosition = Common_Image::PLACE_NORTH;
 	switch($scType){
 		case 1:
 			$wPosition = Common_Image::PLACE_WEST;

@@ -139,6 +139,7 @@ abstract class Common_Image_Abstract
      */
     protected $_quality = 88;
 
+	public $isReady = false;
     /**
      * 生成随机文件名
      * @return string
@@ -173,7 +174,7 @@ abstract class Common_Image_Abstract
 	 */
 	public function __construct($sourcePath = null) {
 		if ($sourcePath !== null) {
-			$this->read($sourcePath);
+			$this->isReady = $this->read($sourcePath);
 		}
 	}
 	

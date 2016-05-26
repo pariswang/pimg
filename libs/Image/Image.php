@@ -581,8 +581,9 @@ class Common_Image extends Common_Image_Abstract
      * 输出图像到浏览器
      * @see Lib_Image_Abstract::show()
      */
-    public function show() {
-        switch ($this->_sourceType) {
+    public function show($type = '') {
+		if(empty($type)) $type = $this->_sourceType;
+        switch ($type) {
             case self::TYPE_GIF  : $imgType = 'image/gif'; $ext = 'gif'; break;
             case self::TYPE_JPEG :
             case self::TYPE_JPG  : $imgType = 'image/jpeg'; $ext = 'jpeg'; break;
