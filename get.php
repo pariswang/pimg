@@ -32,7 +32,7 @@ if(!$image->isReady){
 
 $destSize = $format[1];
 $mode = $format[2];
-$destSize = explode(',', $destSize);
+$destSize = explode('x', $destSize);
 
 if(substr($mode,0,2)=='sc'||empty($mode)){
 	$scType = substr($mode,2);
