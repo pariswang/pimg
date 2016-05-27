@@ -25,4 +25,4 @@ define( 'PLUGIN_PATH', DIR_ROOT . '/plugins' );
 define( 'SCRIPT_PATH', DIR_ROOT . '/scripts' );
 
 require_once( 'utils.php' );
-
+require_once( LIB_PATH . '/Logger.class.php' );

@@ -31,6 +31,10 @@ class File{
 		return @file_get_contents( $filename );
 	}
 	
+	public static function appendFile( $filename, $data ){
+		return @file_put_contents( $filename, $data, FILE_APPEND );
+	}
+	
 	public static function getBaseName(){
 		return pathinfo($file, PATHINFO_BASENAME);
 	}
