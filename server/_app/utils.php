@@ -1,4 +1,12 @@
 <?php
+/*   
+ *   pimg - a PHP image storage & processing server
+ *   
+ *   Copyright (c) 2016-2017, Paris wang <suppersoft@gmail.com>.
+ *   All rights reserved.
+ *   
+ * 
+ */
 
 function _errorMsg($err, $errMsg=''){
 	global $_ErrorMsgs;
