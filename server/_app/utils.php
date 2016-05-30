@@ -8,13 +8,6 @@
  * 
  */
 
-function _errorMsg($err, $errMsg=''){
-	global $_ErrorMsgs;
-	return array(
-		'error' => $err,
-		'errorMsg' => $errMsg=='' ? $_ErrorMsgs[$err] : $errMsg
-	);
-}
 
 function request_raw_uri(){
 	if (isset($_SERVER['REQUEST_URI'])){
@@ -35,7 +28,7 @@ function request_uri(){
 	if(!empty($uri)){
 		$qmpos = strpos($uri,"?");
 		if(!empty($qmpos)){
-			$uri = substr($uri,0,$qmpos) ;
+			$uri = substr($uri,0,$qmpos);
 		}
 	}
 	return $uri;
@@ -55,7 +48,24 @@ function isPost() {
 	return $_SERVER ['REQUEST_METHOD'] === 'POST' ? TRUE : FALSE;
 }
 
-require_once( LIB_PATH . '/ConfigReader.class.php' );
+function returnOk( $data = array(), $format = 'json' ){
+	return json_encode( array( 'res' => 0, 'data' => $data ) );
+}
+
+function returnErr( $err, $msg = '', $format = 'json' ){
+	if( $msg == '' ){
+		$msg = _errorMsg( $err );
+		$msg = $msg['errorMsg'];
+	}
+	return json_encode( array( 'res' => $err, 'msg' => $msg ) );
+}
+
+function isImage( $file ){
+	return true;
+}
+
+
+require_once( LIB_PATH . 'ConfigReader.class.php' );
 function C( $name ){
 	if( empty( ConfigReader::$_cache ) ){
 		ConfigReader::init();

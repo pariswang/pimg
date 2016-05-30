@@ -27,7 +27,7 @@ class ConfigReader{
 	public static function readConfig( $file ){
 		$source = '';
 		
-		$f = new File( CONFIG_PATH . '/' . $file );
+		$f = new File( CONFIG_PATH . $file );
 		while( ( $line = $f->readLine() ) !== false ){
 			$pos = strpos( $line, '//' );
 			if( false !== $pos ){

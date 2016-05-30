@@ -44,14 +44,14 @@ class File{
 	}
 	
 	public static function getBaseName(){
-		return pathinfo($file, PATHINFO_BASENAME);
+		return pathinfo( $file, PATHINFO_BASENAME );
 	}
 	
 	public static function getDir(){
-		return pathinfo($file, PATHINFO_DIRNAME);
+		return pathinfo( $file, PATHINFO_DIRNAME );
 	}
 	
-	public static function getExt(){
-		return strtolower(pathinfo($file, PATHINFO_EXTENSION));	
+	public static function getExt( $file ){
+		return strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
 	}
 }

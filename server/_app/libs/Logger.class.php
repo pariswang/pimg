@@ -7,7 +7,7 @@
  *   
  * 
  */
-require_once( LIB_PATH . '/File.class.php' );
+require_once( LIB_PATH . 'File.class.php' );
 
 Logger::setLogDir( LOG_PATH );
 

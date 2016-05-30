@@ -8,4 +8,5 @@
  * 
  */
  
+define( 'DIR_ROOT', str_replace( "\\", '/', dirname( __FILE__) ) . DIRECTORY_SEPARATOR );
 require_once( '_app/main.php' );
