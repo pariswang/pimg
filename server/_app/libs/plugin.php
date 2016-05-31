@@ -24,24 +24,13 @@ function add_action( $tag, $function_to_add, $accepted_args = 1, $priority = 10 
 	return true;
 }
 
-function do_action($tag, $arg = '') {
+function do_action($tag, $args) {
 	global $pimg_actions;
 	
 	if ( !isset($pimg_actions[$tag]) ) {
 		return;
 	}
-	
-	$args = array();
-	if ( is_array($arg) && 1 == count($arg) && isset($arg[0]) && is_object($arg[0]) ){
-		$args[] =& $arg[0];
-	}else{
-		$args[] = $arg;
-	}
-	
-	for ( $a = 2; $a < func_num_args(); $a++ ){
-		$args[] = func_get_arg($a);
-	}
-	
+
 	ksort($pimg_actions[ $tag ] );
 	reset( $pimg_actions[ $tag ] );
 
