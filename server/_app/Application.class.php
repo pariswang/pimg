@@ -86,16 +86,18 @@ class Application{
 		$this->file_full_name = DIR_ROOT . $this->module . DIRECTORY_SEPARATOR . $date . DIRECTORY_SEPARATOR . $this->md5 . '.' . $ext;
 		$this->file_url = '/' . $this->module . '/' . $date . '/' . $this->md5 . '.' . $ext;
 		
-		$dir = dirname($this->file_full_name);
-		if ( !is_dir( $dir ) ){
-			mkdir( $dir, 0777, true );
-		}
-		
 		$writeToDisk = true;
 		do_action( 'uploadFile', array( $this->module, $file['tmp_name'], $this->file_full_name, &$writeToDisk ) );
-		
-		if ( $writeToDisk && ! move_uploaded_file( $file['tmp_name'], $this->file_full_name ) ){
-			return _errorMsg(9);
+
+		if( $writeToDisk ){
+			$dir = dirname($this->file_full_name);
+			if ( !is_dir( $dir ) ){
+				mkdir( $dir, 0777, true );
+			}
+			
+			if ( ! move_uploaded_file( $file['tmp_name'], $this->file_full_name ) ){
+				return _errorMsg(9);
+			}
 		}
 		
 		do_action( 'uploadFileEnd', array( $this->module, $file['tmp_name'], $this->file_full_name ) );
