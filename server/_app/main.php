@@ -30,5 +30,7 @@ require_once( LIB_PATH . '/Logger.class.php' );
 
 define( 'MAX_FILE_SIZE', C( 'max_file_size' ) );
 
+require_once( LIB_PATH . '/plugin.php' );
+
 $app = new Application();
 $app->run();
