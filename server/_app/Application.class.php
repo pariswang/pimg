@@ -16,6 +16,7 @@ class Application{
 	private $md5 = '';
 	private $file_full_name = '';
 	private $file_url = '';
+	private $rawFileURL = '';
 	
 	function __construct(){
 		$this->module = C( 'default_file_dir' );
@@ -101,18 +102,71 @@ class Application{
 		$file = substr( $this->requestURL, strrpos( $this->requestURL, '/' ) + 1 );
 		$ext = substr( $file, strrpos( $file, '.' ) + 1 );
 		$fileArr = explode( self::FILEINFO_SEPARATOR, $file );
-		$rawFileURL = str_replace( $file, $fileArr[0] . '.' . $ext, $this->requestURL );
+		$this->rawFileURL = str_replace( $file, $fileArr[0] . '.' . $ext, $this->requestURL );
 		
-		if( ! is_file( DIR_ROOT . $rawFileURL ) ){
+		if( ! is_file( DIR_ROOT . $this->rawFileURL ) ){
 			echo returnErr(102);
 			exit;
 		}
 		
-		
+		if( isImage( DIR_ROOT . $this->rawFileURL ) ){
+			$this->getImage();
+		}else{
+			
+			echo File::getFile( DIR_ROOT . $this->rawFileURL );
+		}
 	}
 	
 	private function getImage(){
+		require_once( LIB_PATH . '/Image/Image.php' );
+		$image = new Common_Image( DIR_ROOT . $this->rawFileURL );
+		if( !$image->isReady ){
+			echo returnErr(10);
+			exit;
+		}
+
+		$file = substr( $this->requestURL, strrpos( $this->requestURL, '/' ) + 1 );
+		$file = substr( $file, 0, strrpos( $file, '.' ) );
+		$fileArr = explode( self::FILEINFO_SEPARATOR, $file );
 		
+		$destSize = isset( $fileArr[1] ) ? $fileArr[1] : array();
+		$mode = isset( $fileArr[2] ) ? $fileArr[2] : 'sc';
+		$destSize = explode( 'x', $destSize );
+		$destSize[0] = isset( $destSize[0] ) ? (int) $destSize[0] : 0;
+		$destSize[1] = isset( $destSize[1] ) ? (int) $destSize[1] : 0;
+
+		if(substr($mode,0,2)=='sc'||empty($mode)){
+			$scType = substr($mode,2);
+			$wPosition = Common_Image::PLACE_WEST;
+			$hPosition = Common_Image::PLACE_NORTH;
+			switch($scType){
+				case 1:
+					$wPosition = Common_Image::PLACE_WEST;
+					$hPosition = Common_Image::PLACE_NORTH;
+					break;
+				case 2:
+					$wPosition = Common_Image::PLACE_WEST;
+					$hPosition = Common_Image::PLACE_SOUTH;
+					break;
+				case 3:
+					$wPosition = Common_Image::PLACE_EAST;
+					$hPosition = Common_Image::PLACE_NORTH;
+					break;
+				case 4:
+					$wPosition = Common_Image::PLACE_EAST;
+					$hPosition = Common_Image::PLACE_SOUTH;
+					break;
+			}
+			$image->resize($destSize[0], $destSize[1], $wPosition, $hPosition);
+		}elseif(substr($mode,0,1)=='s'){
+			$image->thumbnail($destSize[0], $destSize[1]);
+		}elseif(substr($mode,0,1)=='e'){
+			
+		}elseif(substr($mode,0,1)=='c'){
+			
+		}
+
+		$image->show();
 	}
 	
 	public function run(){

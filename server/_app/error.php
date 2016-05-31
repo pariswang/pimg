@@ -1,4 +1,13 @@
 <?php
+/*   
+ *   pimg - a PHP image storage & processing server
+ *   
+ *   Copyright (c) 2016-2017, Paris wang <suppersoft@gmail.com>.
+ *   All rights reserved.
+ *   
+ * 
+ */
+
 $_ErrorMsgs = array(
 	0 => '',
 	1 => '上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值',
