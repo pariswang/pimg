@@ -17,6 +17,8 @@ class Application{
 	private $file_full_name = '';
 	private $file_url = '';
 	private $rawFileURL = '';
+	private $requestURL = '';
+	private $requestURI = '';
 	
 	function __construct(){
 		$this->module = C( 'default_file_dir' );
@@ -102,23 +104,33 @@ class Application{
 	}
 	
 	private function getFile(){
-		$this->requestURL = request_uri();
+		$this->requestURI = request_uri();
+		$this->requestURL = request_raw_uri();
 		
-		$file = substr( $this->requestURL, strrpos( $this->requestURL, '/' ) + 1 );
+		$file = substr( $this->requestURI, strrpos( $this->requestURI, '/' ) + 1 );
 		$ext = substr( $file, strrpos( $file, '.' ) + 1 );
+		$file = substr( $file, 0, strrpos( $file, '.' ) );
 		$fileArr = explode( self::FILEINFO_SEPARATOR, $file );
-		$this->rawFileURL = str_replace( $file, $fileArr[0] . '.' . $ext, $this->requestURL );
+		$this->rawFileURL = str_replace( $file, $fileArr[0], $this->requestURI );
 		
-		if( ! is_file( DIR_ROOT . $this->rawFileURL ) ){
-			echo returnErr(102);
-			exit;
-		}
+		$fileContent = null;
+		do_action( 'getFile', array( $this->requestURL, &$this->rawFileURL, &$fileContent ) );
 		
-		if( isImage( DIR_ROOT . $this->rawFileURL ) ){
-			$this->getImage();
+		header( 'Content-Type:' . contentType( $ext ) );
+		
+		if( $fileContent ){
+			echo $fileContent;
 		}else{
+			if( ! is_file( DIR_ROOT . $this->rawFileURL ) ){
+				echo returnErr(102);
+				exit;
+			}
 			
-			echo File::getFile( DIR_ROOT . $this->rawFileURL );
+			if( isImage( DIR_ROOT . $this->rawFileURL ) ){
+				$this->getImage();
+			}else{
+				echo File::getFile( DIR_ROOT . $this->rawFileURL );
+			}
 		}
 	}
 	
@@ -130,7 +142,7 @@ class Application{
 			exit;
 		}
 
-		$file = substr( $this->requestURL, strrpos( $this->requestURL, '/' ) + 1 );
+		$file = substr( $this->requestURI, strrpos( $this->requestURI, '/' ) + 1 );
 		$file = substr( $file, 0, strrpos( $file, '.' ) );
 		$fileArr = explode( self::FILEINFO_SEPARATOR, $file );
 		

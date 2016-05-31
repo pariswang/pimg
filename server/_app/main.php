@@ -27,6 +27,7 @@ require_once( 'utils.php' );
 require_once( 'error.php' );
 require_once( 'Application.class.php' );
 require_once( LIB_PATH . '/Logger.class.php' );
+require_once( LIB_PATH . '/ContentType.php' );
 
 define( 'MAX_FILE_SIZE', C( 'max_file_size' ) );
 

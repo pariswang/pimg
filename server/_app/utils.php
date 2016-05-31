@@ -61,7 +61,7 @@ function returnErr( $err, $msg = '', $format = 'json' ){
 }
 
 function isImage( $file ){
-	return true;
+	return false;
 }
 
 
