@@ -14,12 +14,11 @@ if ( ! isset( $pimg_actions ) ){
 	$pimg_actions = array();
 }
 
-function add_action( $tag, $function_to_add, $accepted_args = 1, $priority = 10 ) {
+function add_action( $tag, $function_to_add, $priority = 10 ) {
 	global $pimg_actions;
 	
 	$pimg_actions[$tag][$priority][] = array(
-		'function' => $function_to_add,
-		'accepted_args' => $accepted_args
+		'function' => $function_to_add
 	);
 	return true;
 }
@@ -37,7 +36,7 @@ function do_action($tag, $args) {
 	do {
 		foreach ( (array) current($pimg_actions[$tag]) as $the_ ){
 			if ( !is_null($the_['function']) ){
-				call_user_func_array($the_['function'], array_slice($args, 0, (int) $the_['accepted_args']));
+				call_user_func_array($the_['function'], $args);
 			}
 		}
 	} while ( next($pimg_actions[$tag]) !== false );
