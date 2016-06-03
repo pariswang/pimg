@@ -25,25 +25,6 @@ class Application{
 	}
 	
 	private function uploadFile(){
-		if( count($_FILES) == 1 ){
-			$fileInfo = $this->fileInfo( $file );
-			$r = $this->uploadOneFile( $_FILES[0] );
-			if( isError( $r ) ){
-				echo returnErr( $r['error'] );
-			}else{
-				echo returnOk( array(
-					'error' => 0,
-					'md5' => $this->md5,
-					'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->file_url,
-					'fileinfo' => $fileInfo
-				) );
-			}
-		}else{
-			$this->uploadMultiFile();
-		}
-	}
-	
-	private function uploadMultiFile(){
 		$results = array();
 		$sucCount = 0;
 		foreach( $_FILES as $file ){

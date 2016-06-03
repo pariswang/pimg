@@ -30,12 +30,12 @@ function do_action($tag, $args) {
 		return;
 	}
 
-	ksort($pimg_actions[ $tag ] );
+	ksort( $pimg_actions[ $tag ] );
 	reset( $pimg_actions[ $tag ] );
 
 	do {
-		foreach ( (array) current($pimg_actions[$tag]) as $the_ ){
-			if ( !is_null($the_['function']) ){
+		foreach ( (array) current( $pimg_actions[$tag] ) as $the_ ){
+			if ( !is_null( $the_['function'] ) ){
 				call_user_func_array($the_['function'], $args);
 			}
 		}
