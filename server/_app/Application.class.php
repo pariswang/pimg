@@ -26,13 +26,16 @@ class Application{
 	
 	private function uploadFile(){
 		if( count($_FILES) == 1 ){
+			$fileInfo = $this->fileInfo( $file );
 			$r = $this->uploadOneFile( $_FILES[0] );
 			if( isError( $r ) ){
 				echo returnErr( $r['error'] );
 			}else{
 				echo returnOk( array(
+					'error' => 0,
 					'md5' => $this->md5,
 					'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->file_url,
+					'fileinfo' => $fileInfo
 				) );
 			}
 		}else{
@@ -44,6 +47,7 @@ class Application{
 		$results = array();
 		$sucCount = 0;
 		foreach( $_FILES as $file ){
+			$fileInfo = $this->fileInfo( $file );
 			$r = $this->uploadOneFile( $file );
 			if( isError( $r ) ){
 				$results[] = $r;
@@ -53,6 +57,7 @@ class Application{
 					'error' => 0,
 					'md5' => $this->md5,
 					'url' => ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] ? 'https' : 'http' ) . '://' . $_SERVER['SERVER_NAME'] . $this->file_url,
+					'fileinfo' => $fileInfo
 				);
 			}
 		}
@@ -62,6 +67,23 @@ class Application{
 		}else{
 			echo returnErr( $results[0]['error'] );
 		}
+	}
+	
+	private function fileInfo( $file ){
+		$imgInfo = getimagesize( $file['tmp_name'] );
+		if( ! $imgInfo ){
+			return array(
+				'type' => File::getExt( $file['name'] ),
+				'size' => filesize( $file['tmp_name'] ),
+			);
+		}
+		
+		return array(
+			'type' => File::getExt( $file['name'] ),
+			'size' => File::getSize( $file['tmp_name'] ),
+			'image_width' => $imgInfo[0],
+			'image_height' => $imgInfo[1],
+		);
 	}
 	
 	private function uploadOneFile( $file ){
@@ -148,7 +170,7 @@ class Application{
 		$file = substr( $file, 0, strrpos( $file, '.' ) );
 		$fileArr = explode( self::FILEINFO_SEPARATOR, $file );
 		
-		$destSize = isset( $fileArr[1] ) ? $fileArr[1] : array();
+		$destSize = isset( $fileArr[1] ) ? $fileArr[1] : '';
 		$mode = isset( $fileArr[2] ) ? $fileArr[2] : 'sc';
 		$destSize = explode( 'x', $destSize );
 		$destSize[0] = isset( $destSize[0] ) ? (int) $destSize[0] : 0;

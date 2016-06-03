@@ -54,4 +54,8 @@ class File{
 	public static function getExt( $file ){
 		return strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
 	}
+	
+	public static function getSize( $file ){
+		return filesize( $file );
+	}
 }
