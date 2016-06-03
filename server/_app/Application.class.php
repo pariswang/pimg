@@ -19,12 +19,25 @@ class Application{
 	private $rawFileURL = '';
 	private $requestURL = '';
 	private $requestURI = '';
+	private $chunk = 0;
+	private $chunks = 0;
+	private $chunkFile = '';
 	
 	function __construct(){
 		$this->module = C( 'default_file_dir' );
 	}
 	
 	private function uploadFile(){
+		
+		$this->chunk = isset( $_REQUEST["chunk"] ) ? intval( $_REQUEST["chunk"] ) : 0;
+		$this->chunks = isset( $_REQUEST["chunks"] ) ? intval( $_REQUEST["chunks"] ) : 0;
+		$this->chunkName = isset( $_REQUEST['name'] ) ? trim( $_REQUEST['name'] ) : 0;
+		if( $this->chunks && $this->chunk != $this->chunks - 1 ){
+			if( ! $this->chunkUpload() ){
+				return;
+			}
+		}
+		
 		$results = array();
 		$sucCount = 0;
 		foreach( $_FILES as $file ){
@@ -51,6 +64,14 @@ class Application{
 	}
 	
 	private function fileInfo( $file ){
+		if( (int) $file['error'] != 0 ){
+			return _errorMsg( $file['error'] );
+		}
+		
+		if( ! is_uploaded_file( $file['tmp_name'] ) ) {
+			return _errorMsg( 4, '找不到文件：'.$file['name'] );
+		}
+		
 		$imgInfo = getimagesize( $file['tmp_name'] );
 		if( ! $imgInfo ){
 			return array(
@@ -89,6 +110,10 @@ class Application{
 		$this->file_full_name = DIR_ROOT . $this->module . DIRECTORY_SEPARATOR . $date . DIRECTORY_SEPARATOR . $this->md5 . '.' . $ext;
 		$this->file_url = '/' . $this->module . '/' . $date . '/' . $this->md5 . '.' . $ext;
 		
+		if( $this->chunks > 0 && $this->chunk == $this->chunks - 1 && !empty( $this->chunkName ) ){
+			$file['tmp_name'] = TMP_PATH . $this->chunkName . '.part';
+		}
+		
 		$writeToDisk = true;
 		do_action( 'uploadFile', array( $this->module, $file['tmp_name'], &$this->file_full_name, &$writeToDisk ) );
 
@@ -98,14 +123,58 @@ class Application{
 				mkdir( $dir, 0777, true );
 			}
 			
-			if ( ! move_uploaded_file( $file['tmp_name'], $this->file_full_name ) ){
-				return _errorMsg(9);
+			if( $this->chunks > 0 && $this->chunk == $this->chunks - 1 && !empty( $this->chunkName ) ){
+				if ( ! File::move( $file['tmp_name'], $this->file_full_name ) ){
+					return _errorMsg(9);
+				}
+			}else{
+				if ( ! move_uploaded_file( $file['tmp_name'], $this->file_full_name ) ){
+					return _errorMsg(9);
+				}
 			}
 		}
 		
 		do_action( 'uploadFileEnd', array( $this->module, $file['tmp_name'], $this->file_full_name ) );
 		
+		if( $this->chunks > 0 && $this->chunk == $this->chunks - 1 && !empty( $this->chunkName ) ){
+			@File::del( TMP_PATH . $this->chunkName . '.part' );
+		}
 		return true;
+	}
+	
+	private function chunkUpload(){
+		$filePath = TMP_PATH . $this->chunkName . '.part';
+		
+		if( ! $out = @fopen( "{$filePath}", $this->chunks ? "ab" : "wb" ) ){
+			return false;
+		}
+		
+		if( ! empty( $_FILES ) ){
+			if( $_FILES["file"]["error"] || ! is_uploaded_file( $_FILES["file"]["tmp_name"] ) ){
+				return false;
+			}
+
+			if( ! $in = @fopen( $_FILES["file"]["tmp_name"], "rb" ) ){
+				return false;
+			}
+		}else{
+			if( ! $in = @fopen( "php://input", "rb" ) ){
+				return false;
+			}
+		}
+		
+		while ($buff = fread($in, 4096)) {
+			fwrite($out, $buff);
+		}
+
+		@fclose($out);
+		@fclose($in);
+		
+		if( ! $this->chunks || $this->chunk == $this->chunks - 1 ){
+			return true;
+		}
+		echo returnOk( 1 );
+		return false;
 	}
 	
 	private function getFile(){

@@ -22,6 +22,7 @@ define( 'CONFIG_PATH', DIR_ROOT . '_app' . DIRECTORY_SEPARATOR . 'config' . DIRE
 define( 'LOG_PATH', DIR_ROOT . '_app' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR );
 define( 'PLUGIN_PATH', DIR_ROOT . '_app' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR );
 define( 'SCRIPT_PATH', DIR_ROOT . '_app' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR );
+define( 'TMP_PATH', DIR_ROOT . '_app' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR );
 
 require_once( 'utils.php' );
 require_once( 'error.php' );

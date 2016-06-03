@@ -58,4 +58,12 @@ class File{
 	public static function getSize( $file ){
 		return filesize( $file );
 	}
+	
+	public static function del( $file ){
+		return unlink( $file );
+	}
+	
+	public static function move( $src, $dest ){
+		return rename( $src, $dest );
+	}
 }
