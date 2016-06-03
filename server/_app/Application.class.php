@@ -75,13 +75,13 @@ class Application{
 		$imgInfo = getimagesize( $file['tmp_name'] );
 		if( ! $imgInfo ){
 			return array(
-				'type' => File::getExt( $file['name'] ),
+				'type' => File::getExt( isset( $_REQUEST['name'] ) ? trim( $_REQUEST['name'] ) : $file['name'] ),
 				'size' => filesize( $file['tmp_name'] ),
 			);
 		}
 		
 		return array(
-			'type' => File::getExt( $file['name'] ),
+			'type' => File::getExt( isset( $_REQUEST['name'] ) ? trim( $_REQUEST['name'] ) : $file['name'] ),
 			'size' => File::getSize( $file['tmp_name'] ),
 			'image_width' => $imgInfo[0],
 			'image_height' => $imgInfo[1],
@@ -97,7 +97,7 @@ class Application{
 			return _errorMsg( 4, '找不到文件：'.$file['name'] );
 		}
 		
-		$ext  = File::getExt( $file['name'] );
+		$ext  = File::getExt( isset( $_REQUEST['name'] ) ? trim( $_REQUEST['name'] ) : $file['name'] );
 		
 		if ( $file['size'] > MAX_FILE_SIZE ) {
 			return _errorMsg( 8 );
