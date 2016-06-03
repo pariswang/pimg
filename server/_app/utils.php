@@ -61,7 +61,21 @@ function returnErr( $err, $msg = '', $format = 'json' ){
 }
 
 function isImage( $file ){
-	return false;
+	$imgInfo = getimagesize( $file );
+	if( ! $imgInfo ){
+		return false;
+	}
+	$type = strtolower( image_type_to_extension( $imgInfo[2], false ) );
+	
+	$allowImageTypes = C( 'allow_image_type' );
+	$allowImageTypes = explode( ',', $allowImageTypes );
+	foreach( $allowImageTypes as &$t ){
+		$t = trim( $t );
+	}
+	 if( ! in_array( $type, $allowImageTypes ) ){
+		return false;
+	}
+	return true;
 }
 
 

@@ -52,7 +52,7 @@ class Application{
 				$results[] = array(
 					'error' => 0,
 					'md5' => $this->md5,
-					'url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $this->file_url,
+					'url' => ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] ? 'https' : 'http' ) . '://' . $_SERVER['SERVER_NAME'] . $this->file_url,
 				);
 			}
 		}
@@ -87,7 +87,7 @@ class Application{
 		$this->file_url = '/' . $this->module . '/' . $date . '/' . $this->md5 . '.' . $ext;
 		
 		$writeToDisk = true;
-		do_action( 'uploadFile', array( $this->module, $file['tmp_name'], $this->file_full_name, &$writeToDisk ) );
+		do_action( 'uploadFile', array( $this->module, $file['tmp_name'], &$this->file_full_name, &$writeToDisk ) );
 
 		if( $writeToDisk ){
 			$dir = dirname($this->file_full_name);
@@ -192,9 +192,7 @@ class Application{
 		$this->pathArray = getPathArray();
 		
 		if( isset( $this->pathArray[1] ) && $this->pathArray[ 1 ] ){
-			if( is_dir( DIR_ROOT . $this->pathArray[1] ) ){
-				$this->module = $this->pathArray[1];
-			}
+			$this->module = $this->pathArray[1];
 		}
 		
 		if( isPost() ){

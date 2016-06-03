@@ -1,5 +1,11 @@
 {
-	"default_file_dir": "d",// 默认存放文件夹
-	"max_file_size": "10485760"	// 10M
+	// 被识别为图片的类型
+	"allow_image_type": "gif, jpg, jpeg, png",
 	
+	// 默认存放文件夹
+	"default_file_dir": "d",
+	
+	// 10M
+	"max_file_size": "10485760"
+		
 }
