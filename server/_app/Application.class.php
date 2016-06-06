@@ -32,7 +32,7 @@ class Application{
 		$this->chunk = isset( $_REQUEST["chunk"] ) ? intval( $_REQUEST["chunk"] ) : 0;
 		$this->chunks = isset( $_REQUEST["chunks"] ) ? intval( $_REQUEST["chunks"] ) : 0;
 		$this->chunkName = isset( $_REQUEST['name'] ) ? trim( $_REQUEST['name'] ) : 0;
-		if( $this->chunks && $this->chunk != $this->chunks - 1 ){
+		if( $this->chunks ){
 			if( ! $this->chunkUpload() ){
 				return;
 			}
